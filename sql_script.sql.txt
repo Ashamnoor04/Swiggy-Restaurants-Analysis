@@ -1,0 +1,130 @@
+-- SQL SCRIPT FOR SWIGGY RESTAURANT ANALYSIS
+-- Project by Ashamnoor Singh
+
+-- ====================================================================
+-- PHASE 1: DATA CLEANING & TRANSFORMATION
+-- ====================================================================
+
+-- Temporarily disable safe update mode to allow bulk updates.
+SET SQL_SAFE_UPDATES = 0;
+
+-- Clean the 'avg_ratings' column by setting 0 values to NULL.
+-- This prevents them from incorrectly skewing average calculations.
+UPDATE swiggy_restaurants
+SET avg_ratings = NULL
+WHERE avg_ratings = 0;
+
+-- Clean the 'price' column by setting 0 values to NULL.
+UPDATE swiggy_restaurants
+SET price = NULL
+WHERE price = 0;
+
+-- Clean text columns by removing any leading or trailing whitespace.
+-- This ensures consistency for GROUP BY operations.
+UPDATE swiggy_restaurants
+SET
+    city = TRIM(city),
+    area = TRIM(area),
+    restaurant_name = TRIM(restaurant_name);
+
+-- Re-enable safe update mode after cleaning is complete.
+SET SQL_SAFE_UPDATES = 1;
+
+-- ====================================================================
+-- PHASE 2: EXPLORATORY DATA ANALYSIS (EDA)
+-- ====================================================================
+
+-- Query 1: How many total unique restaurants are in the dataset?
+SELECT COUNT(DISTINCT restaurant_name) AS total_restaurants
+FROM swiggy_restaurants;
+
+-- Query 2: How many unique cities are covered?
+SELECT COUNT(DISTINCT city) AS number_of_cities
+FROM swiggy_restaurants;
+
+-- Query 3: What are the top 15 most common (primary) food types?
+-- Note: This is based on the primary listing and does not account for multi-valued cuisine fields.
+SELECT food_type, COUNT(DISTINCT restaurant_name) AS restaurant_count
+FROM swiggy_restaurants
+GROUP BY food_type
+ORDER BY restaurant_count DESC
+LIMIT 15;
+
+-- Query 4: What is the distribution of restaurant ratings?
+-- This segments restaurants into performance categories.
+SELECT
+    CASE
+        WHEN avg_ratings >= 4.5 THEN 'Excellent'
+        WHEN avg_ratings >= 4.0 THEN 'Good'
+        WHEN avg_ratings >= 3.5 THEN 'Average'
+        ELSE 'Poor'
+    END AS rating_category,
+    COUNT(DISTINCT restaurant_name) AS number_of_restaurants
+FROM swiggy_restaurants
+WHERE avg_ratings IS NOT NULL
+GROUP BY rating_category
+ORDER BY number_of_restaurants DESC;
+
+-- Query 5: Which cities are the main business hotspots by restaurant count?
+SELECT city, COUNT(DISTINCT restaurant_name) AS number_of_restaurants
+FROM swiggy_restaurants
+GROUP BY city
+ORDER BY number_of_restaurants DESC;
+
+-- Query 6: What are the top-rated areas within a major city (e.g., Bangalore)?
+-- This helps identify "high-quality" neighborhoods.
+SELECT
+    area,
+    COUNT(DISTINCT restaurant_name) AS number_of_restaurants,
+    ROUND(AVG(avg_ratings), 2) AS average_rating
+FROM swiggy_restaurants
+WHERE city = 'Bangalore'
+GROUP BY area
+HAVING COUNT(DISTINCT restaurant_name) > 10 -- Only considers areas with a significant restaurant presence
+ORDER BY average_rating DESC
+LIMIT 10;
+
+-- Query 7: What is the most expensive restaurant in each city?
+-- This query uses a Common Table Expression (CTE) and a Window Function (ROW_NUMBER)
+-- to perform advanced ranking.
+WITH RankedRestaurants AS (
+    SELECT
+        restaurant_name,
+        city,
+        price,
+        ROW_NUMBER() OVER(PARTITION BY city ORDER BY price DESC) as rn
+    FROM swiggy_restaurants
+    WHERE price IS NOT NULL
+)
+SELECT
+    restaurant_name,
+    city,
+    price
+FROM RankedRestaurants
+WHERE rn = 1
+GROUP BY restaurant_name, city, price;
+
+-- Query 8: Is there a link between price and rating?
+-- This query segments restaurants into price categories to analyze value perception.
+SELECT
+    CASE
+        WHEN price < 250 THEN 'Budget (< ₹250)'
+        WHEN price >= 250 AND price < 500 THEN 'Mid-Range (₹250-₹500)'
+        ELSE 'Premium (> ₹500)'
+    END AS price_category,
+    COUNT(DISTINCT restaurant_name) AS number_of_restaurants,
+    ROUND(AVG(avg_ratings), 2) AS average_rating
+FROM swiggy_restaurants
+WHERE price IS NOT NULL AND avg_ratings IS NOT NULL
+GROUP BY price_category
+ORDER BY average_rating DESC;
+
+-- Query 9: How do average ratings differ across major cities?
+-- This query benchmarks overall market quality.
+SELECT
+    city,
+    ROUND(AVG(avg_ratings), 2) AS average_city_rating
+FROM swiggy_restaurants
+WHERE avg_ratings IS NOT NULL
+GROUP BY city
+ORDER BY average_city_rating DESC;
