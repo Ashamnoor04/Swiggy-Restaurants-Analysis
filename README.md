@@ -1,7 +1,7 @@
 # Swiggy-Restaurants-Analysis
-📊 Swiggy Restaurant Analysis: A Business Intelligence Project 🚀
-Project by Ashamnoor Singh
-📌 Project Overview
+#📊 Swiggy Restaurant Analysis: A Business Intelligence Project 🚀
+#Project by Ashamnoor Singh
+#📌 Project Overview
 This project is an end-to-end Business Intelligence solution designed to analyze the Swiggy restaurant dataset. The primary objective is to transform raw, unstructured data into actionable strategic insights. By leveraging MySQL for data processing and Power BI for visualization, this project identifies key market trends, benchmarks restaurant performance across various cities, and uncovers opportunities for business growth in the competitive food delivery ecosystem.
 
 💻 Technology Stack
@@ -14,7 +14,7 @@ Business Intelligence & Visualization: 📈 Microsoft Power BI
 ⚙️ Methodology & Data Flow
 The project followed a structured, database-centric BI workflow:
 
-➡️ Data Ingestion: A large CSV dataset (~80,000 rows) was loaded into a MySQL database using the LOAD DATA LOCAL INFILE command, skillfully navigating and resolving initial security and configuration challenges.
+➡️ Data Ingestion: A large CSV dataset (~8000 rows) was loaded into a MySQL database using the LOAD DATA LOCAL INFILE command, skillfully navigating and resolving initial security and configuration challenges.
 
 ✨ Data Cleaning & Transformation (SQL): All data cleaning was performed directly within MySQL. This included handling null values, removing whitespace with TRIM(), and standardizing data types to ensure analytical integrity.
 
@@ -28,9 +28,9 @@ Raw CSV File ➡️ MySQL Workbench (Ingestion) ➡️ MySQL DB (Cleaning & Anal
 🖼️ The Interactive Dashboard
 The final output is a dynamic, single-page dashboard designed for a business leader. It provides a high-level executive summary and allows for deep-dive analysis into specific markets using interactive slicers.
 
-<img width="1312" height="740" alt="Dashboard_screenshot" src="https://github.com/user-attachments/assets/7c7353d7-08bd-4c0d-a35c-5b84e7a95c3c" />
 
-To insert your image: Edit this file, delete this line, and drag your dashboard_screenshot.png file directly into this spot. It will upload and link automatically!
+
+<img width="1920" height="1019" alt="Power BI Desktop 13-10-2025 1_10_21" src="https://github.com/user-attachments/assets/b0353c5e-4219-4d74-8f7b-d73ca10bf1e7" />
 
 💡 Key Business Insights from the Analysis
 1. 🏆 Significant Disparity in Market Quality
