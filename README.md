@@ -1,7 +1,8 @@
-# Swiggy-Restaurants-Analysis
-#📊 Swiggy Restaurant Analysis: A Business Intelligence Project 🚀
-#Project by Ashamnoor Singh
-#📌 Project Overview
+Swiggy-Restaurants-Analysis
+📊 Swiggy Restaurant Analysis: A Business Intelligence Project 🚀
+
+Project by Ashamnoor Singh
+📌 Project Overview
 This project is an end-to-end Business Intelligence solution designed to analyze the Swiggy restaurant dataset. The primary objective is to transform raw, unstructured data into actionable strategic insights. By leveraging MySQL for data processing and Power BI for visualization, this project identifies key market trends, benchmarks restaurant performance across various cities, and uncovers opportunities for business growth in the competitive food delivery ecosystem.
 
 💻 Technology Stack
